@@ -1,5 +1,5 @@
 import random
-
+import numpy
 
 def init_population(size):
     bits = ['0', '1']
@@ -41,16 +41,25 @@ def to_decimal(bit_str):
     return int(bit_str, base=2)
 
 
-def fitness_func(string):
-    value = to_decimal(string)
-    return value / 32
+def fitness_func(indv):
+    total = 0
+    for ind in population:
+        total = total + to_decimal(ind)
+    return to_decimal(indv) / total
 
 
-def random_mate_select(population):
-    parent1 = random.choice(population)
-    population.remove(parent1)
-    parent2 = random.choice(population)
-    return [parent1, parent2]
+
+
+# returns 2 pairs of mates
+def random_mate_select(population, fitnesses):
+    parents1 = numpy.random.choice(population, 2, replace=False, p=fitnesses)
+    print(parents1)
+    parents2 = numpy.random.choice(population, 2, replace=False, p=fitnesses)
+    print(parents2)
+    while (parents1 == parents2).all():
+        parents2 = numpy.random.choice(population, 2, replace=False, p=fitnesses)
+
+    return [parents1, parents2]
 
 
 if __name__ == "__main__":
@@ -64,27 +73,26 @@ if __name__ == "__main__":
 
     while highest_fitness < fitness_threshold:
         # Fitness Function
-        ranks = []
+        fitnesses = []
         for individual in population:
-            ranks.append(fitness_func(individual))
-        print(ranks)
-        highest_fitness = max(ranks)
-        max_individual = population[ranks.index(highest_fitness)]
+            fitnesses.append(fitness_func(individual))
+        print(fitnesses)
+        highest_fitness = max(fitnesses)
+        max_individual = population[fitnesses.index(highest_fitness)]
 
-        # Selection at random for mating
-        lowest_fitness_index = ranks.index(min(ranks))
-        del population[lowest_fitness_index]
-        del ranks[lowest_fitness_index]
+        # if random.random() < .4:
+        #     low_fitness_index = fitnesses.index(min(fitnesses))
+        #     del population[low_fitness_index]
+        #     del fitnesses[low_fitness_index]
         print(population)
-
-        # Crossover/Repr
-        parents = random_mate_select(population)
-        #print("Mates selected")
-        # print("Parents \n{}".format(parents))
-        children = reproduce(parents[0], parents[1])
-        # print("Children \n{}".format(children))
-
-        parents2 = random_mate_select(population)
+        print('here')
+        # Non-Uniform Selection
+        parents = random_mate_select(population, fitnesses)
+        parents1 = parents[0].tolist()
+        parents2 = parents[1].tolist()
+        print("Parents Pool: {}".format(parents1))
+        # Crossover/Reproduce
+        children = reproduce(parents1[0], parents1[1])
         children = children + reproduce(parents2[0], parents2[1])
 
         # Mutation with small independent probability
