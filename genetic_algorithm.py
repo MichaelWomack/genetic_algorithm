@@ -43,7 +43,7 @@ def to_decimal(bit_str):
 
 def fitness_func(string):
     value = to_decimal(string)
-    return value / 32
+    return value / 31
 
 
 def random_mate_select(population):
@@ -62,6 +62,7 @@ if __name__ == "__main__":
     print(population)
     highest_fitness = 0
 
+    generation = 0
     while highest_fitness < fitness_threshold:
         # Fitness Function
         fitnesses = []
@@ -79,20 +80,22 @@ if __name__ == "__main__":
 
         # Crossover/Repr
         parents = random_mate_select(population)
-        #print("Mates selected")
-        # print("Parents \n{}".format(parents))
         children = reproduce(parents[0], parents[1])
-        # print("Children \n{}".format(children))
 
         parents2 = random_mate_select(population)
         children = children + reproduce(parents2[0], parents2[1])
 
         # Mutation with small independent probability
         for child in children:
-            if random.random() < .3:
+            if random.random() < .2:
                 children[children.index(child)] = mutate(child)
+                print("------Mutation----")
 
         population = children
-        print(children)
+        generation += 1
+        print("Highest value: {} fitness: {} Generation: {}".format(max_individual, highest_fitness, generation))
 
-print("Highest value: {} fitness: {}".format(max_individual, highest_fitness))
+
+
+print("Highest value: {} fitness: {} Generation: {}".format(max_individual, highest_fitness, generation))
+
