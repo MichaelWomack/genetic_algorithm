@@ -64,17 +64,17 @@ if __name__ == "__main__":
 
     while highest_fitness < fitness_threshold:
         # Fitness Function
-        ranks = []
+        fitnesses = []
         for individual in population:
-            ranks.append(fitness_func(individual))
-        print(ranks)
-        highest_fitness = max(ranks)
-        max_individual = population[ranks.index(highest_fitness)]
+            fitnesses.append(fitness_func(individual))
+        print(fitnesses)
+        highest_fitness = max(fitnesses)
+        max_individual = population[fitnesses.index(highest_fitness)]
 
         # Selection at random for mating
-        lowest_fitness_index = ranks.index(min(ranks))
+        lowest_fitness_index = fitnesses.index(min(fitnesses))
         del population[lowest_fitness_index]
-        del ranks[lowest_fitness_index]
+        del fitnesses[lowest_fitness_index]
         print(population)
 
         # Crossover/Repr
