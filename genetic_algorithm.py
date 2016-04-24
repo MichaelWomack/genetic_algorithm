@@ -39,9 +39,6 @@ class GeneticAlgorithm(object):
 
         return ''.join(split)
 
-    def get_crossover(self):
-        return random.randint(0, 3)
-
     def to_decimal(self, bit_str):
         return int(bit_str, base=2)
 
