@@ -1,101 +1,57 @@
 import random
 
+class GeneticAlgorithm(object):
+    """ class to create a genetic algorithm """
 
-def init_population(size):
-    bits = ['0', '1']
-    population = []
+    def __init__(self, population_size, max_generations, p_mutation):
+        self.population = self.init_population(population_size)
+        self.fitnesses = []
+        self.max_generations = max_generations
+        self.p_mutation = p_mutation
+        self.global_optimum = (0, 0, 0) # individual, fitness, generation
 
-    for i in range(size):
-        bit_str = ''
-        for bit_index in range(3):
-            bit_str = random.choice(bits) + bit_str
-        population.append('00' + bit_str)
+    def init_population(self, size):
+        bits = ['0', '1']
+        population = []
 
-    return population
+        for i in range(size):
+            bit_str = ''
+            for bit_index in range(3):
+                bit_str = random.choice(bits) + bit_str
+            population.append('00' + bit_str)
 
+        return population
 
-def reproduce(parent1, parent2):
-    crossover = random.randint(0, len(parent1) - 1)
-    child1 = parent1[:crossover] + parent2[crossover:]
-    child2 = parent2[:crossover] + parent1[crossover:]
-    return [child1, child2]
+    def reproduce(self, parent1, parent2):
+        crossover = random.randint(0, len(parent1) - 1)
+        child1 = parent1[:crossover] + parent2[crossover:]
+        child2 = parent2[:crossover] + parent1[crossover:]
+        return [child1, child2]
 
+    def mutate(self, individual):
+        rand_index = random.randint(0, len(individual) - 1)
+        split = list(individual)
 
-def mutate(individual):
-    rand_index = random.randint(0, len(individual) - 1)
-    split = list(individual)
+        if split[rand_index] == '0':
+            split[rand_index] = '1'
+        else:
+            split[rand_index] = '0'
 
-    if split[rand_index] == '0':
-        split[rand_index] = '1'
-    else:
-        split[rand_index] = '0'
+        return ''.join(split)
 
-    return ''.join(split)
+    def get_crossover(self):
+        return random.randint(0, 3)
 
+    def to_decimal(self, bit_str):
+        return int(bit_str, base=2)
 
-def get_crossover():
-    return random.randint(0, 3)
+    def fitness_func(self, string):
+        value = self.to_decimal(string)
+        return value * value
 
-
-def to_decimal(bit_str):
-    return int(bit_str, base=2)
-
-
-def fitness_func(string):
-    value = to_decimal(string)
-    return value / 31
-
-
-def random_mate_select(population):
-    parent1 = random.choice(population)
-    population.remove(parent1)
-    parent2 = random.choice(population)
-    return [parent1, parent2]
-
-
-if __name__ == "__main__":
-    print(to_decimal("11111"))
-
-    fitness_threshold = .95  # Initial Population
-    max_individual = 0
-    population = init_population(4)
-    print(population)
-    highest_fitness = 0
-
-    generation = 0
-    while highest_fitness < fitness_threshold:
-        # Fitness Function
-        fitnesses = []
-        for individual in population:
-            fitnesses.append(fitness_func(individual))
-        print(fitnesses)
-        highest_fitness = max(fitnesses)
-        max_individual = population[fitnesses.index(highest_fitness)]
-
-        # Selection at random for mating
-        lowest_fitness_index = fitnesses.index(min(fitnesses))
-        del population[lowest_fitness_index]
-        del fitnesses[lowest_fitness_index]
-        print(population)
-
-        # Crossover/Repr
-        parents = random_mate_select(population)
-        children = reproduce(parents[0], parents[1])
-
-        parents2 = random_mate_select(population)
-        children = children + reproduce(parents2[0], parents2[1])
-
-        # Mutation with small independent probability
-        for child in children:
-            if random.random() < .2:
-                children[children.index(child)] = mutate(child)
-                print("------Mutation----")
-
-        population = children
-        generation += 1
-        print("Highest value: {} fitness: {} Generation: {}".format(max_individual, highest_fitness, generation))
-
-
-
-print("Highest value: {} fitness: {} Generation: {}".format(max_individual, highest_fitness, generation))
+    def random_mate_select(self, population):
+        parent1 = random.choice(population)
+        population.remove(parent1)
+        parent2 = random.choice(population)
+        return [parent1, parent2]
 
