@@ -1,4 +1,4 @@
-from genetic_algorithm import GeneticAlgorithm
+from population import Population
 import random
 
 
@@ -16,7 +16,7 @@ if __name__ == "__main__":
     population_size = 4
     num_generations = 6
     p_mutation = .2
-    ga = GeneticAlgorithm(population_size, num_generations, p_mutation)
+    ga = Population(population_size, num_generations, p_mutation)
 
     current_generation = 0
     while current_generation < ga.max_generations:

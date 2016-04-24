@@ -1,7 +1,7 @@
 import random
 
-class GeneticAlgorithm(object):
-    """ class to create a genetic algorithm """
+class Population(object):
+    """ class to create a population and reproduce and mutate it """
 
     def __init__(self, population_size, max_generations, p_mutation):
         self.population = self.init_population(population_size)
