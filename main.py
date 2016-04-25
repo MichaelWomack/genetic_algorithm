@@ -32,7 +32,10 @@ if __name__ == "__main__":
         if highest_fitness > ga.global_optimum[1]:
             ga.global_optimum = (max_individual, highest_fitness, current_generation)
 
-        print("Gen: {}\tPopulation: {}\tFitnesses: {}".format(current_generation, ga.population, ga.fitnesses))
+        avg = sum(ga.fitnesses) / len(ga.fitnesses)
+
+        print("Gen: {}\tPopulation: {}\tFitnesses: {}\tAverage Fitness: {}"
+              .format(current_generation, ga.population, ga.fitnesses, avg))
 
         # Selection at random for mating
         lowest_fitness_index = ga.fitnesses.index(min(ga.fitnesses))
